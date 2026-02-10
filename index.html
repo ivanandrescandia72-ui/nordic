@@ -2,146 +2,455 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Nordi 💖</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nordi 💘</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    :root{
+      --bg1:#fde2ea;
+      --bg2:#e9f7ef;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --pink:#ff3b7a;
+      --soft:#eef2f7;
     }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #fde2ea, #e9f7ef);
+    *{ box-sizing:border-box; }
+
+    /* Cursor corazón (SVG inline) */
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(1200px 700px at 30% 30%, rgba(255, 192, 203, .55), transparent 55%),
+                  radial-gradient(1200px 700px at 70% 70%, rgba(167, 243, 208, .55), transparent 55%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23ff3b7a" d="M16 28s-10-6.5-13-12C.7 11.5 3.4 7 8 7c2.3 0 4.1 1.2 5 2.7C13.9 8.2 15.7 7 18 7c4.6 0 7.3 4.5 5 9-3 5.5-13 12-13 12z"/></svg>') 16 16, auto;
     }
 
-    .card {
-      background: white;
+    /* Confetti canvas */
+    #confettiCanvas{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index: 20;
+    }
+
+    .card{
+      width:min(820px, 92vw);
+      min-height: 420px;
+      background: rgba(255,255,255,.75);
       border-radius: 28px;
-      padding: 40px 32px;
-      width: 90%;
-      max-width: 420px;
-      text-align: center;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      box-shadow: 0 28px 80px rgba(0,0,0,.18);
+      padding: 26px 26px 22px;
+      position:relative;
+      backdrop-filter: blur(10px);
+      overflow:hidden;
     }
 
-    .top-icons {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      font-size: 28px;
-      margin-bottom: 12px;
+    /* Pantallas */
+    .screen{
+      display:none;
+      height:100%;
+      min-height: 372px;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap: 14px;
+      text-align:center;
+    }
+    .screen.active{ display:flex; }
+
+    /* Iconos superiores */
+    .top-icons{
+      position:absolute;
+      top:16px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:14px;
+      align-items:center;
+      z-index: 2;
+      user-select:none;
     }
 
-    .heart-beat {
-      animation: beat 1.2s infinite;
-    }
-
-    @keyframes beat {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-    }
-
-    .hero {
-      margin: 18px 0;
-    }
-
-    .chihuahua {
-      width: 120px;
-      height: auto;
-    }
-
-    h1 {
+    /* Sin fondo blanco: solo emoji “limpio” */
+    .top-emoji{
       font-size: 26px;
-      margin: 20px 0 28px;
-      color: #111827;
+      line-height: 1;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.18));
     }
 
-    .button-zone {
+    /* Corazón con latido */
+    .heart-beat{
+      display:inline-block;
+      animation: beat 1.05s ease-in-out infinite;
+      transform-origin:center;
+    }
+    @keyframes beat{
+      0%,100%{ transform: scale(1); }
+      35%{ transform: scale(1.18); }
+      55%{ transform: scale(0.98); }
+    }
+
+    /* Zanahoria salta cuando NO se mueve */
+    .carrot-bounce{
+      animation: carrot 0.28s ease-in-out;
+    }
+    @keyframes carrot{
+      0%{ transform: translateY(0) rotate(0deg); }
+      45%{ transform: translateY(-10px) rotate(-10deg); }
+      100%{ transform: translateY(0) rotate(0deg); }
+    }
+
+    /* Chihuahua */
+    .hero{
+      margin-top: 20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      user-select:none;
+    }
+    .chihuahua{
+      width: 84px;
+      height: auto;
+      filter: drop-shadow(0 16px 22px rgba(0,0,0,.20));
+    }
+
+    h1{
+      margin: 10px 0 0;
+      font-size: clamp(26px, 4vw, 48px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+    }
+
+    .button-zone{
+      margin-top: 10px;
+      display:flex;
+      gap: 18px;
+      align-items:center;
+      justify-content:center;
       position: relative;
-      height: 120px;
+      height: 110px;
+      width: 100%;
     }
 
-    button {
-      border: none;
+    button{
+      border:0;
+      font-weight: 800;
       border-radius: 999px;
-      padding: 14px 32px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform .15s ease;
+      padding: 12px 22px;
+      cursor: inherit;
+      transition: transform .12s ease, filter .12s ease;
+      box-shadow: 0 14px 28px rgba(0,0,0,.12);
+      user-select:none;
+    }
+    button:hover{
+      transform: translateY(-1px) scale(1.02);
+      filter: brightness(1.02);
     }
 
-    button:hover {
-      transform: scale(1.05);
-    }
-
-    .yes {
-      background: #ff3d7f;
+    .yes{
+      background: var(--pink);
       color: white;
+      min-width: 92px;
     }
 
-    .no {
-      background: #e5e7eb;
+    .no{
+      background: #e9eef6;
       color: #111827;
-      position: absolute;
+      min-width: 76px;
+      position:absolute;
+      right: 120px;
+      top: 26px;
     }
 
-    .hint {
-      margin-top: 14px;
+    .hint{
+      margin: 6px 0 0;
+      color: var(--muted);
       font-size: 14px;
-      color: #6b7280;
     }
 
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 22px;
-      }
+    .piano-indicator{
+      margin-top: 4px;
+      font-size: 12px;
+      color: #64748b;
+      opacity: .9;
+      user-select:none;
+    }
+
+    /* Pantalla 2 */
+    .big-yes{
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      margin: 0;
+    }
+    .sub{
+      margin: 0;
+      color:#334155;
+      font-size: 16px;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+      margin-top: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,59,122,.12);
+      color: #9f1239;
+      font-weight: 800;
+    }
+
+    @media (max-width: 520px){
+      .card{ min-height: 520px; }
+      .no{ right: 60px; top: 30px; }
+      .chihuahua{ width: 78px; }
+      .top-emoji{ font-size: 24px; }
     }
   </style>
 </head>
 
 <body>
+  <canvas id="confettiCanvas"></canvas>
 
   <main class="card">
+    <!-- iconos arriba -->
     <div class="top-icons">
-      <span id="carrotEmoji">🥕</span>
-      <span class="heart-beat">💗</span>
+      <span class="top-emoji" id="carrotEmoji" aria-hidden="true">🥕</span>
+      <span class="top-emoji heart-beat" aria-hidden="true">💗</span>
     </div>
 
-    <div class="hero">
-      <!-- IMPORTANTE: la imagen debe estar en el repo -->
-      <img src="chihuahua.png" alt="Chihuahua" class="chihuahua" />
-    </div>
+    <!-- SCREEN 1 -->
+    <section class="screen active" id="screenAsk">
+      <div class="hero" aria-hidden="true">
+        <!-- Debe existir en el repo al mismo nivel que index.html -->
+        <img src="chihuahua.png" alt="Chihuahua" class="chihuahua" />
+      </div>
 
-    <h1>Nordi, will you be my Valentine?</h1>
+      <h1>Nordi, will you be my Valentine?</h1>
 
-    <div class="button-zone">
-      <button class="yes" id="yesBtn">Yes</button>
-      <button class="no" id="noBtn">No</button>
-    </div>
+      <div class="button-zone">
+        <button class="yes" id="yesBtn">Yes</button>
+        <button class="no" id="noBtn">No</button>
+      </div>
 
-    <p class="hint">“No” seems a bit shy 😈</p>
+      <p class="hint">“No” seems a bit shy 😈</p>
+      <div class="piano-indicator" id="pianoIndicator">Piano off 🎹</div>
+    </section>
+
+    <!-- SCREEN 2 -->
+    <section class="screen" id="screenYes">
+      <div class="hero" aria-hidden="true">
+        <img src="chihuahua.png" alt="Chihuahua" class="chihuahua" />
+      </div>
+      <p class="big-yes">💘 She said YES 💘</p>
+      <p class="sub">Okay… now we celebrate like civilized romantics 😌</p>
+      <div class="pill">🥕 + 💗 + 🐶 = perfect combo</div>
+    </section>
   </main>
 
   <script>
+    // =========================
+    // 1) Piano romántico SIN autoplay (arranca en el primer click)
+    //    -> WebAudio simple (no pesa nada, no necesita mp3)
+    // =========================
+    let audioStarted = false;
+    let ctx, master, pianoTimer, noteIndex = 0;
+
+    const indicator = document.getElementById("pianoIndicator");
+
+    // Progresión "romántica" simple (acordes en notas MIDI aproximadas)
+    // Am  F  C  G  (muy pop-romanticona)
+    const chords = [
+      [57, 60, 64], // A3 C4 E4
+      [53, 57, 60], // F3 A3 C4
+      [48, 52, 55], // C3 E3 G3
+      [50, 55, 59], // G3 D4 B3 (voicing bonito)
+    ];
+
+    function midiToFreq(m){ return 440 * Math.pow(2, (m - 69) / 12); }
+
+    function playNote(freq, t, dur, gain){
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+
+      // Un toque más “piano-like”: onda triangle + fade rápido
+      o.type = "triangle";
+      o.frequency.setValueAtTime(freq, t);
+
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(gain, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+      o.connect(g);
+      g.connect(master);
+
+      o.start(t);
+      o.stop(t + dur + 0.02);
+    }
+
+    function startPiano(){
+      if(audioStarted) return;
+      audioStarted = true;
+
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      master = ctx.createGain();
+      master.gain.value = 0.22;
+      master.connect(ctx.destination);
+
+      indicator.textContent = "Piano on 🎹";
+
+      const tempoMs = 520; // ritmo suave
+      pianoTimer = setInterval(() => {
+        const now = ctx.currentTime;
+        const chord = chords[noteIndex % chords.length];
+
+        // arpegio suave + una nota base
+        playNote(midiToFreq(chord[0]), now, 0.28, 0.12);
+        playNote(midiToFreq(chord[1]), now + 0.08, 0.22, 0.10);
+        playNote(midiToFreq(chord[2]), now + 0.16, 0.20, 0.09);
+
+        noteIndex++;
+      }, tempoMs);
+    }
+
+    // Primer click en cualquier parte => arranca audio
+    window.addEventListener("pointerdown", () => {
+      startPiano();
+    }, { once: true });
+
+    // =========================
+    // 2) NO se escapa + zanahoria salta (y un toque de “tensión”)
+    // =========================
     const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const carrot = document.getElementById("carrotEmoji");
+    const card = document.querySelector(".card");
 
-    noBtn.addEventListener("mouseenter", () => {
-      const x = Math.random() * 200 - 100;
-      const y = Math.random() * 80 - 40;
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    function bounceCarrot(){
+      carrot.classList.remove("carrot-bounce");
+      // reflow para reiniciar animación
+      void carrot.offsetWidth;
+      carrot.classList.add("carrot-bounce");
+      setTimeout(() => carrot.classList.remove("carrot-bounce"), 350);
+    }
+
+    function moveNoButton(){
+      const zone = document.querySelector(".button-zone");
+      const zoneRect = zone.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      // límites dentro de button-zone
+      const padding = 10;
+      const maxX = zoneRect.width - btnRect.width - padding;
+      const maxY = zoneRect.height - btnRect.height - padding;
+
+      const x = Math.random() * maxX + padding;
+      const y = Math.random() * maxY + padding;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+      noBtn.style.right = "auto";
+
+      bounceCarrot();
+
+      // "tensión": si el audio está activo, metemos una notita aguda rápida
+      if(audioStarted && ctx){
+        const t = ctx.currentTime;
+        playNote(midiToFreq(84), t, 0.12, 0.07); // C6 agudo cortito
+      }
+    }
+
+    // Desktop: hover
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    // Mobile: touch / pointer
+    noBtn.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      moveNoButton();
     });
 
-    document.getElementById("yesBtn").addEventListener("click", () => {
-      alert("💖 She said YES 💖");
+    // =========================
+    // 3) YES => pantalla 2 + confetti
+    // =========================
+    const screenAsk = document.getElementById("screenAsk");
+    const screenYes = document.getElementById("screenYes");
+
+    yesBtn.addEventListener("click", () => {
+      screenAsk.classList.remove("active");
+      screenYes.classList.add("active");
+      launchConfetti();
     });
+
+    // =========================
+    // 4) Confetti simple (canvas)
+    // =========================
+    const canvas = document.getElementById("confettiCanvas");
+    const c = canvas.getContext("2d");
+    let confetti = [];
+    let confettiRAF;
+
+    function resize(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function launchConfetti(){
+      confetti = [];
+      for(let i=0;i<160;i++){
+        confetti.push({
+          x: rand(0, canvas.width),
+          y: rand(-canvas.height, 0),
+          r: rand(3, 7),
+          vx: rand(-1.6, 1.6),
+          vy: rand(2.2, 4.8),
+          rot: rand(0, Math.PI*2),
+          vr: rand(-0.12, 0.12),
+          life: rand(140, 220)
+        });
+      }
+      if(confettiRAF) cancelAnimationFrame(confettiRAF);
+      tickConfetti();
+    }
+
+    function tickConfetti(){
+      c.clearRect(0,0,canvas.width,canvas.height);
+
+      confetti.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vr;
+        p.life -= 1;
+
+        c.save();
+        c.translate(p.x, p.y);
+        c.rotate(p.rot);
+        // Colores sin hardcodear “bonitos”: alternamos con 2 tonos base
+        c.fillStyle = (p.life % 2 === 0) ? "rgba(255,59,122,.85)" : "rgba(16,185,129,.75)";
+        c.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+        c.restore();
+      });
+
+      confetti = confetti.filter(p => p.life > 0 && p.y < canvas.height + 30);
+
+      if(confetti.length){
+        confettiRAF = requestAnimationFrame(tickConfetti);
+      } else {
+        c.clearRect(0,0,canvas.width,canvas.height);
+      }
+    }
   </script>
-
 </body>
 </html>
