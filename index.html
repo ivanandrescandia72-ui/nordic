@@ -1,292 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nordi 💘</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nordi 💗</title>
 
-  <style>
-    :root{
-      /* AJUSTES RÁPIDOS */
-      --dogSize: 200px;         /* 🐶 perrito más grande */
-      --cardRadius: 28px;
-      --shadow: 0 28px 80px rgba(0,0,0,.18);
-      --pink: #ff3b7a;
-      --text: #111827;
-    }
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+<style>
+:root{
+  --yes:#ff3b7a;
+  --yesHover:#ff1f68;
+  --text:#111827;
+  --card:#ffffffcc;
+}
 
-    body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:
-        radial-gradient(900px 500px at 20% 25%, rgba(255,70,135,.35), transparent 60%),
-        radial-gradient(900px 500px at 80% 75%, rgba(120,255,210,.25), transparent 60%),
-        linear-gradient(135deg, #ffe7f0, #e8fff6);
-      color:var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44"><text x="8" y="30" font-size="26">💗</text></svg>') 10 10, auto;
-    }
+*{box-sizing:border-box}
 
-    #confettiCanvas{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:2;
-    }
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at top left,#ffd6e7,transparent 45%),
+    radial-gradient(circle at bottom right,#c7f5df,transparent 45%),
+    #fff;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  overflow:hidden;
+}
 
-    .card{
-      width:min(760px, 92vw);
-      background: rgba(255,255,255,.78);
-      border-radius: var(--cardRadius);
-      box-shadow: var(--shadow);
-      padding: 30px 34px 26px;
-      backdrop-filter: blur(12px);
-      position:relative;
-      z-index:3;
-    }
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:99;
+}
 
-    .top-icons{
-      display:flex;
-      justify-content:center;
-      gap:14px;
-      margin-bottom: 10px;
-    }
+.card{
+  width:min(820px,94vw);
+  padding:28px;
+  background:var(--card);
+  backdrop-filter:blur(10px);
+  border-radius:28px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);
+  position:relative;
+}
 
-    .top-emoji{
-      font-size:22px;
-    }
+.top{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin-bottom:6px;
+}
 
-    .heart-beat{
-      animation: beat 1.05s ease-in-out infinite;
-    }
+.icon{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 10px 22px rgba(0,0,0,.12);
+  font-size:22px;
+}
 
-    @keyframes beat{
-      0%,100%{ transform: scale(1); }
-      30%{ transform: scale(1.12); }
-      60%{ transform: scale(.98); }
-    }
+.heart{
+  animation:beat 1.3s infinite;
+}
 
-    .hero{
-      display:flex;
-      justify-content:center;
-      margin: 10px 0;
-    }
+@keyframes beat{
+  0%,100%{transform:scale(1)}
+  30%{transform:scale(1.15)}
+}
 
-    .chihuahua{
-      width: var(--dogSize);
-      filter: drop-shadow(0 18px 22px rgba(0,0,0,.18));
-    }
+.hero svg{
+  width:200px;
+  filter:drop-shadow(0 12px 18px rgba(0,0,0,.18));
+  animation:breathe 4s ease-in-out infinite;
+}
 
-    h1{
-      text-align:center;
-      font-weight: 850;
-      margin: 10px 0 18px;
-      font-size: clamp(28px, 3.2vw, 46px);
-    }
+@keyframes breathe{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.03)}
+}
 
-    .button-zone{
-      position:relative;
-      height: 96px;
-      display:flex;
-      justify-content:center;
-      gap:22px;
-    }
+h1{
+  font-size:clamp(26px,4vw,42px);
+  margin:16px 0 10px;
+}
 
-    button{
-      border:0;
-      border-radius:999px;
-      padding:14px 26px;
-      font-weight:800;
-      box-shadow:0 16px 34px rgba(0,0,0,.10);
-      cursor:inherit;
-      transition:.15s;
-    }
+.buttons{
+  position:relative;
+  height:160px;
+  margin-top:20px;
+}
 
-    button:hover{ transform: translateY(-1px); }
+button{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  padding:16px 28px;
+  border-radius:999px;
+  border:none;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+}
 
-    .yes{
-      background: var(--pink);
-      color:white;
-      min-width:110px;
-    }
+#yes{
+  left:20%;
+  background:var(--yes);
+  color:#fff;
+}
 
-    .no{
-      background:#eef1f6;
-      min-width:92px;
-      position:absolute;
-      right:14%;
-      top:26px;
-    }
+#yes:hover{background:var(--yesHover)}
 
-    .hint{
-      text-align:center;
-      opacity:.65;
-      font-size:13px;
-      margin-top:8px;
-    }
+#no{
+  left:60%;
+  background:#e5e7eb;
+}
 
-    .screen{ display:none; }
-    .screen.active{ display:block; }
+.result{
+  display:none;
+  animation:pop .4s ease;
+}
 
-    .success-title{
-      text-align:center;
-      font-size:clamp(30px,3.4vw,52px);
-      font-weight:900;
-      margin:10px 0 6px;
-    }
+@keyframes pop{
+  from{opacity:0;transform:scale(.95)}
+  to{opacity:1;transform:scale(1)}
+}
 
-    .success-sub{
-      text-align:center;
-      opacity:.75;
-      font-size:14px;
-    }
+.result h2{
+  font-size:clamp(30px,4vw,46px);
+  margin:10px 0 6px;
+}
 
-    .pill{
-      display:flex;
-      justify-content:center;
-      margin-top:12px;
-    }
+.result p{
+  font-weight:700;
+}
 
-    .pill span{
-      padding:8px 14px;
-      border-radius:999px;
-      background: rgba(255,59,122,.1);
-      font-weight:800;
-      font-size:13px;
-    }
-  </style>
+.result img{
+  width:min(420px,92%);
+  border-radius:18px;
+  margin:14px 0;
+}
+
+.whats{
+  display:inline-flex;
+  gap:10px;
+  align-items:center;
+  padding:14px 22px;
+  border-radius:999px;
+  background:#22c55e;
+  color:#fff;
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);
+}
+</style>
 </head>
 
 <body>
-  <canvas id="confettiCanvas"></canvas>
 
-  <main class="card">
+<canvas id="confetti"></canvas>
 
-    <!-- SCREEN ASK -->
-    <section class="screen active" id="screenAsk">
-      <div class="top-icons">
-        <span class="top-emoji">🥕</span>
-        <span class="top-emoji heart-beat">💗</span>
-      </div>
+<main class="card" id="card">
+  <div class="top">
+    <div class="icon">🥕</div>
+    <div class="icon heart">💗</div>
+  </div>
 
-      <div class="hero">
-        <img src="chihuahua.png" class="chihuahua" alt="Chihuahua" />
-      </div>
+  <div class="hero">
+    <!-- Chihuahua SVG -->
+    <svg viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="70" fill="#c9c3bf"/>
+      <circle cx="75" cy="90" r="8"/>
+      <circle cx="125" cy="90" r="8"/>
+      <circle cx="100" cy="120" r="6" fill="#ff7aa2"/>
+      <path d="M95 130 Q100 135 105 130" stroke="#333" stroke-width="3" fill="none"/>
+      <path d="M50 50 L30 20" stroke="#c9c3bf" stroke-width="14"/>
+      <path d="M150 50 L170 20" stroke="#c9c3bf" stroke-width="14"/>
+      <path d="M130 40 Q145 25 155 40" fill="#ff2f75"/>
+    </svg>
+  </div>
 
-      <h1>Nordi, will you be my Valentine?</h1>
+  <h1>Nordi, will you be my Valentine?</h1>
 
-      <div class="button-zone">
-        <button class="yes" id="yesBtn">Yes</button>
-        <button class="no" id="noBtn">No</button>
-      </div>
+  <section class="buttons" id="zone">
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </section>
 
-      <p class="hint">“No” seems a bit shy 😈</p>
-    </section>
+  <section class="result" id="result">
+    <h2>aceptasteee :)</h2>
+    <p>Trae hambre y cero excusas.</p>
 
-    <!-- SCREEN YES -->
-    <section class="screen" id="screenYes">
-      <div class="top-icons">
-        <span class="top-emoji">🥕</span>
-        <span class="top-emoji heart-beat">💗</span>
-      </div>
+    <img src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif" alt="celebration">
 
-      <div class="hero">
-        <img src="chihuahua.png" class="chihuahua" alt="Chihuahua" />
-      </div>
+    <a class="whats" href="https://wa.me/34641920721" target="_blank">
+      Abrir WhatsApp 💬
+    </a>
+  </section>
+</main>
 
-      <div class="success-title">💘 She said YES 💘</div>
-      <div class="success-sub">Okay… now we celebrate like civilized romantics 😌</div>
+<script>
+const no = document.getElementById("no");
+const yes = document.getElementById("yes");
+const zone = document.getElementById("zone");
+const result = document.getElementById("result");
+const canvas = document.getElementById("confetti");
+const conf = confetti.create(canvas,{resize:true,useWorker:true});
 
-      <div class="pill">
-        <span>🥕 + 💗 + 🐶 = perfect combo</span>
-      </div>
-    </section>
+let audioCtx, master, pianoOn=false;
 
-  </main>
+function ensureAudio(){
+  if(!audioCtx){
+    audioCtx=new (AudioContext||webkitAudioContext)();
+    master=audioCtx.createGain();
+    master.gain.value=.25;
+    master.connect(audioCtx.destination);
+  }
+}
 
-  <script>
-    /* ========= WHATSAPP CONFIG ========= */
-    const WHATSAPP_URL =
-      "https://wa.me/34641920721?text=" +
-      encodeURIComponent("💘 She said YES 💘");
+function piano(freq,dur){
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.type="triangle";
+  o.frequency.value=freq;
+  g.gain.setValueAtTime(.001,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.3,audioCtx.currentTime+.02);
+  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);
+  o.connect(g); g.connect(master);
+  o.start(); o.stop(audioCtx.currentTime+dur+.05);
+}
 
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const screenAsk = document.getElementById("screenAsk");
-    const screenYes = document.getElementById("screenYes");
+window.addEventListener("pointerdown",()=>{
+  if(pianoOn) return;
+  ensureAudio(); pianoOn=true;
+  setInterval(()=>piano(220+Math.random()*80,.6),1200);
+},{once:true});
 
-    /* NO button escapa */
-    function moveNo(){
-      const zone = document.querySelector(".button-zone");
-      const maxX = zone.clientWidth - noBtn.offsetWidth;
-      const maxY = zone.clientHeight - noBtn.offsetHeight;
-      noBtn.style.left = Math.random()*maxX + "px";
-      noBtn.style.top = Math.random()*maxY + "px";
-      noBtn.style.right = "auto";
-    }
-    noBtn.addEventListener("mouseenter", moveNo);
+zone.addEventListener("pointermove",e=>{
+  const b=no.getBoundingClientRect();
+  const d=Math.hypot(e.clientX-b.x,e.clientY-b.y);
+  if(d<120){
+    no.style.left=Math.random()*70+"%";
+    piano(520,.1);
+  }
+});
 
-    /* YES */
-    yesBtn.addEventListener('click', () => {
-      // abrir WhatsApp (sin bloqueo)
-      window.open(WHATSAPP_URL, "_blank");
+yes.onclick=()=>{
+  ensureAudio();
+  zone.style.display="none";
+  result.style.display="block";
+  conf({particleCount:300,spread:140,startVelocity:60});
+};
+</script>
 
-      // cambiar pantalla
-      screenAsk.classList.remove("active");
-      screenYes.classList.add("active");
-
-      // confetti
-      launchConfetti();
-    });
-
-    /* CONFETTI */
-    const canvas = document.getElementById("confettiCanvas");
-    const ctx = canvas.getContext("2d");
-    let confetti = [];
-
-    function resize(){
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resize);
-    resize();
-
-    function launchConfetti(){
-      for(let i=0;i<200;i++){
-        confetti.push({
-          x: canvas.width/2,
-          y: canvas.height/2,
-          vx: (Math.random()-0.5)*8,
-          vy: (Math.random()-1)*8,
-          g: 0.15,
-          life: 1,
-          size: 4 + Math.random()*4
-        });
-      }
-      requestAnimationFrame(updateConfetti);
-    }
-
-    function updateConfetti(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      confetti.forEach(p=>{
-        p.vy += p.g;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.01;
-        ctx.fillStyle = Math.random()>0.5
-          ? "rgba(255,59,122,.8)"
-          : "rgba(16,185,129,.8)";
-        ctx.fillRect(p.x,p.y,p.size,p.size);
-      });
-      confetti = confetti.filter(p=>p.life>0);
-      if(confetti.length) requestAnimationFrame(updateConfetti);
-    }
-  </script>
 </body>
 </html>
